@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>cuda.lol</title>
+    <style>
+        body {
+            background-color: #009688; /* Teal background */
+            color: white;
+            font-family: 'Courier New', Courier, monospace;
+            text-align: center;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            height: 100vh; /* Full viewport height */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px; /* Adjust for depth effect */
+        }
+        .container {
+            z-index: 2; /* Higher than the GPUs */
+            width: 70%; /* Adjust width as needed */
+            max-width: 960px; /* Adjust max width as needed */
+            transform-style: preserve-3d; /* Needed for 3D transformations */
+        }
+        .marquee {
+            font-size: 24px;
+            animation: marquee 20s linear infinite;
+            text-transform: lowercase; /* Lowercase text */
+        }
+        @keyframes marquee {
+            0%   { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        iframe {
+            border: 3px solid yellow; /* 90s style border */
+            width: 100%; /* Make iframe responsive */
+            height: 400px; /* Fixed height */
+        }
+        .letter {
+            position: fixed;
+            font-size: 60px;
+            color: yellow;
+            animation: spin 10s infinite linear;
+            transform-style: preserve-3d;
+            text-shadow:
+                1px 1px 0px #000,
+                2px 2px 0px #000,
+                3px 3px 3px #000,
+                4px 4px 3px #000,
+                5px 5px 3px #000,
+                6px 6px 3px #000,
+                7px 7px 3px #000,
+                8px 8px 3px #000; /* Multiple shadows for depth */
+
+            }
+
+        @keyframes spin {
+            0% { transform: rotateY(0deg) rotateX(0deg); }
+            25% { transform: rotateY(180deg) rotateX(20deg); }
+            50% { transform: rotateY(180deg) rotateX(40deg); }
+            75% { transform: rotateY(360deg) rotateX(60deg); }
+            100% { transform: rotateY(360deg) rotateX(80deg); }
+        }
+
+        .background-image {
+            position: fixed;
+            width: 50px; /* Smaller size for more images */
+            z-index: 1; /* Lower than content and footer */
+            opacity: 0.5;
+            transition: transform 5s ease; /* Transition for movement */
+        }
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            z-index: 2; /* Higher than the GPUs */
+        }
+    </style>
+</head>
+<body>
+    <script>
+        function moveAndRotate(img) {
+            var x, y;
+            do {
+                x = Math.floor(Math.random() * window.innerWidth);
+                y = Math.floor(Math.random() * window.innerHeight);
+
+                // Avoid placing GPUs within the iframe and footer areas
+            } while ((y > window.innerHeight - 40) || // 40px for footer height
+                     (y < 315 && x < 560)); // 315px for iframe height, 560px for iframe width
+
+            img.style.left = x + 'px';
+            img.style.top = y + 'px';
+            img.style.transform = 'rotate(' + Math.floor(Math.random() * 360) + 'deg)';
+        }
+
+        function createGPUs() {
+            var screenWidth = window.innerWidth;
+            var numOfGPUs = Math.floor(screenWidth / 25);
+
+            for (var i = 0; i < numOfGPUs; i++) {
+                (function() { // Start of IIFE
+                    var img = document.createElement('img');
+                    img.src = '/images/gpu.png';
+                    img.className = 'background-image';
+                    document.body.appendChild(img);
+
+                    img.animate([
+                        { transform: 'rotate(0deg)' },
+                        { transform: 'rotate(360deg)' }
+                    ], {
+                        duration: 5000,
+                        iterations: Infinity
+                    });
+                    moveAndRotate(img);
+                    setInterval(function() { moveAndRotate(img); }, Math.random() * 20000 + 2000);
+                })(); // End of IIFE
+            }
+        }
+        // Create GPUs when the page loads
+        window.onload = createGPUs;
+    </script>
+    <div class="letter" style="top: 10%; left: 10%;">G</div>
+    <div class="letter" style="top: 10%; left: 40%; right: 40%;">P</div>
+    <div class="letter" style="top: 10%; right: 10%;">U</div>
+
+    <div class="container">
+        <div class="marquee">buy gpus</div>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/YGpnXANXGUg?autoplay=1"
+                frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
+    </div>
+
+    <footer>
+        Pixel art GPU image credits: <a href="https://fal.ai">fal.ai</a> (use code cuda.lol for 10% OFF when running world's fastest SDXL inference!!) <br>
+        GPUs are fire song credits: Anon ("Weird A.I."), Clay, David, Eche, Gaddi, Zack, <a href="https://gpu-utils.org">gpu-utils.org</a>
+    </footer>
+</body>
+</html>
